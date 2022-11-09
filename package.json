@@ -1,0 +1,23 @@
+{
+  "name": "apiproyect",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "API to get analitics from webs",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mihaiku",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "4.18.2",
+    "firebase": "^9.12.1",
+    "jsonwebtoken": "^8.5.1",
+    "sequelize": "^6.25.2"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.20"
+  }
+}
