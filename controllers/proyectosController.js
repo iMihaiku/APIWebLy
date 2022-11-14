@@ -12,30 +12,28 @@ import {
   where
 } from 'firebase/firestore'
 
-async function crearProyecto(titulo, descripcion, IDusuario) {
-  const totalProyects = await getDocs(
-    collection(db, 'Usuarios', IDusuario, 'proyectos')
-  )
-  let proyectID
-  totalProyects.forEach((doc) => {
-    proyectID = doc.data().id + 1
-  })
-
-  console.log(proyectID + ' ' + IDusuario)
+async function crearProyecto(id, titulo, descripcion, URLDomain, IDusuario) {
+  let res
+  console.log(id, titulo, descripcion, IDusuario);
   const documento = {
-    titulo: titulo,
-    descripcion: descripcion,
-    fechaCreacion: new Date(),
-    id: proyectID
+    title: titulo,
+    descprition: descripcion,
+    creationDate: new Date(),
+    id: id,
+    state: 'offline',
+    URLDomain: URLDomain,
   }
   try {
     await setDoc(
-      doc(db, 'Usuarios', IDusuario, 'proyectos', proyectID + ''),
+      doc(db, 'Usuarios', IDusuario, 'proyectos', id + ''),
       documento
     )
+    res = documento
   } catch (Error) {
     console.error('Error adding document: ', Error)
+    res = { error: Error }
   }
+  return res
 }
 
 async function cargarProyectos(IDusuario) {
@@ -48,6 +46,17 @@ async function cargarProyectos(IDusuario) {
   })
   return proyectos
 }
+async function cargarLogs(IDusuario, idProyecto) {
+  console.log(IDusuario, idProyecto);
+  const totalLogs = await getDocs(
+    collection(db, 'Usuarios', IDusuario, 'proyectos', idProyecto, 'logs')
+  )
+  let logs = []
+  totalLogs.forEach((doc) => {
+    logs.push(doc.data())
+  })
+  return logs
+}
 
 async function borrarProyecto(id, IDusuario) {
   try {
@@ -57,4 +66,4 @@ async function borrarProyecto(id, IDusuario) {
   }
 }
 
-export { crearProyecto, cargarProyectos, borrarProyecto }
+export { crearProyecto, cargarProyectos, borrarProyecto, cargarLogs }

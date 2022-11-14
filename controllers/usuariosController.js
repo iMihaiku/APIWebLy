@@ -3,7 +3,7 @@ import { getFirestore, addDoc, collection, deleteDoc, doc, getDocs, setDoc, quer
 import jwt from 'jsonwebtoken'
 
 async function crearUsuario(email, hashPass, auth){
-  const documento = {email: email, pass: hashPass, auth: auth}
+  const documento = {email: email, hashpass: hashPass, auth: auth}
   try {
       await setDoc(doc(db, "Usuarios", email), documento)
       const token = jwt.sign({id: email, auth: auth}, process.env.SECRET)
@@ -36,7 +36,7 @@ async function loginUsuario(email, hashpass){
       });
       console.log(usuario);
       if(usuario===undefined || usuario.email===undefined) return {error: "El usuario no existe en nuestra base de datos, por favor, revise sus credenciales"}
-      const token = jwt.sign({id: usuario.id, auth: usuario.auth}, process.env.SECRET)
+      const token = jwt.sign({id: usuario.email, auth: usuario.auth}, process.env.SECRET)
       return {'token': token}
   }
   catch (Error){
