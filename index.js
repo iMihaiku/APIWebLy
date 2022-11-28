@@ -15,7 +15,7 @@ dotEnv.config()
 
 const app = express()
 let expressWs = ws(app)
-const port = 3001
+const port = process.env.PORT || 3001
 
 app.use(express.json())
 app.use(requestIp.mw())
