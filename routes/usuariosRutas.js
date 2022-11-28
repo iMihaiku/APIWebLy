@@ -9,6 +9,7 @@ usuariosRutas.post('/login', (req, res) => {
     res.send(data)
   })
 })
+
 usuariosRutas.post('/registro', (req, res) => {
   let usuario = new Usuarios("", req.body.email, req.body.hashpass, 'user')
   usuario.registro().then((data) => {
