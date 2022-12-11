@@ -6,7 +6,7 @@ import usuarioExtraido from '../middlewares/usuarioExtraido.js'
 
 proyectosRutas.post('/crear', usuarioExtraido, async (req, res) => {
   let proyecto = new Proyecto(
-    req.body.id,
+    '',
     req.body.titulo,
     req.body.descripcion,
     '',

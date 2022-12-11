@@ -2,6 +2,16 @@ import {myApp, db} from '../firebase.js'
 import { getFirestore, addDoc, collection, deleteDoc, doc, getDocs, setDoc, query, where } from "firebase/firestore"
 import jwt from 'jsonwebtoken'
 
+async function borrarUsuario(id, auth, IDusuario){
+  console.log(id + ' ' + auth + ' ' + IDusuario);
+  if (!(id===IDusuario || auth==="admin")) return {error: "No tienes permisos para borrar este usuario"}
+  try {
+      await deleteDoc(doc(db, "Usuarios", id + ""))
+  }
+  catch (Error){
+      console.error("Error deleting document: ", Error)
+  }
+}
 async function crearUsuario(email, hashPass, auth){
   const documento = {email: email, hashpass: hashPass, auth: auth}
   try {
@@ -15,16 +25,6 @@ async function crearUsuario(email, hashPass, auth){
   }
 }
 
-async function borrarUsuario(id, auth, IDusuario){
-  console.log(id + ' ' + auth + ' ' + IDusuario);
-  if (!(id===IDusuario || auth==="admin")) return {error: "No tienes permisos para borrar este usuario"}
-  try {
-      await deleteDoc(doc(db, "Usuarios", id + ""))
-  }
-  catch (Error){
-      console.error("Error deleting document: ", Error)
-  }
-}
 
 async function loginUsuario(email, hashpass){
   let usuario = {}

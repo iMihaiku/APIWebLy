@@ -8,8 +8,8 @@ class Usuarios
         this.auth = auth
     }
     //metodo para crear usuarios
-    async registro() { return await crearUsuario(this.email, this.hashpass, this.auth)}
     async borrarUsuario(IDusuario) { return await borrarUsuario(this.id, this.auth, IDusuario)}
+    async registro() { return await crearUsuario(this.email, this.hashpass, this.auth)}
     async login() { return await loginUsuario(this.email, this.hashpass)}
 }
 export default Usuarios

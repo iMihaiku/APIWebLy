@@ -19,8 +19,8 @@ estadisticasRutas.post('/cargarEstadisticas', usuarioExtraido, async (req, res) 
 
 estadisticasRutas.post('/validar', usuarioExtraido, async (req, res) => {
   const ip = req.clientIp
-  let proyecto = new Proyecto(req.body.id)
-  proyecto.validarProyecto(req.IDusuario, ip).then((data) => {
+  let estadistica = new Estadistica(req.body.id)
+  estadistica.validar(req.IDusuario, ip).then((data) => {
     res.send(data)
   })
 })

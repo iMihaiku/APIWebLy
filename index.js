@@ -12,7 +12,7 @@ import { collection, getDocs, onSnapshot, orderBy, limit, query, doc} from 'fire
 import requestIp from 'request-ip'
 import jwt from 'jsonwebtoken'
 dotEnv.config()
-
+//console log de la version de node usada
 const app = express()
 let expressWs = ws(app)
 const port = process.env.PORT || 3001
@@ -21,6 +21,7 @@ app.use(express.json())
 app.use(requestIp.mw())
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, authorization'

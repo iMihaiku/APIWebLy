@@ -13,20 +13,24 @@ import {
   where
 } from 'firebase/firestore'
 
-async function crearProyecto(id, titulo, descripcion, URLDomain, IDusuario) {
+async function crearProyecto(titulo, descripcion, URLDomain, IDusuario) {
   let res
 
   const documento = {
     title: titulo,
     descprition: descripcion,
     creationDate: new Date(),
-    id: id,
+    id: 0,
     state: 'offline',
     URLDomain: URLDomain
   }
   try {
+    const docRef = await getDocs(collection(db, 'Usuarios', IDusuario, 'proyectos'))
+    docRef.forEach((doc) => {
+      documento.id = doc.data().id + 1
+    })
     await setDoc(
-      doc(db, 'Usuarios', IDusuario, 'proyectos', id + ''),
+      doc(db, 'Usuarios', IDusuario, 'proyectos', documento.id + ''),
       documento
     )
     res = documento
@@ -70,91 +74,16 @@ async function borrarProyecto(id, IDusuario) {
     await deleteDoc(doc(db, 'Usuarios', IDusuario, 'proyectos', id + ''))
   } catch (Error) {
     console.error('Error adding document: ', Error)
+    return {res: error}
   }
+  return {res: 'deleted'}
 }
 
-async function validar(idProyecto, IDusuario, ip) {
-  const docRef = doc(db, 'Usuarios', IDusuario, 'proyectos', idProyecto + '')
-  const docSnap = await getDoc(docRef)
-  return { 
-    validated: docSnap.exists(),
-    ip: ip
-  }
-}
 
-async function cargarEstadisticas(IDusuario, idProyecto) {
-  console.log(IDusuario, idProyecto);
-  const estadisticas = await getDocs(
-    collection(db, 'Usuarios', IDusuario, 'proyectos', idProyecto+"", 'estadisticas')
-  )
-  let estadisticasArray = []
-  estadisticas.forEach((doc) => {
-    estadisticasArray.push(doc.data())
-  })
-  return estadisticasArray
-}
-async function agregarEstadisticas(
-  idProyecto,
-  IDusuario,
-  visitas,
-  ips,
-  eventos
-) {
-  let res
-  const documento = {
-    fecha: new Date(),
-    visitas: visitas,
-    ips: ips,
-    eventos: eventos,
-  }
-  try {
-    const ref = await addDoc(
-      collection(db, 'Usuarios', IDusuario, 'proyectos', idProyecto + '', 'estadisticas' ), documento)
-    res = {status: 'ok'}
-  } catch (Error) {
-    console.error('Error adding document: ', Error)
-    res = { error: Error }
-  }
-  return res
-}
-
-async function crearEstadistica(idProyecto, IDusuario) {
-  let res
-
-  const documento = {
-    visitas: '10',
-    paises: {
-      Argentina: 10,
-      Chile: 5
-    }
-  }
-  try {
-    await addDoc(
-      collection(
-        db,
-        'Usuarios',
-        IDusuario,
-        'proyectos',
-        idProyecto + '',
-        'estadisticas'
-      ),
-      documento
-    )
-    res = documento
-  } catch (Error) {
-    console.error('Error adding document: ', Error)
-    res = { error: Error }
-  }
-  return res
-}
 
 export {
   crearProyecto,
   cargarProyectos,
   borrarProyecto,
-  cargarLogs,
-  cargarEstadisticas,
-  crearEstadistica,
-  agregarEstadisticas,
-  validar
+  cargarLogs
 }
