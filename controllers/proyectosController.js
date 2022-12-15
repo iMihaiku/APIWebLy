@@ -25,7 +25,9 @@ async function crearProyecto(titulo, descripcion, URLDomain, IDusuario) {
     URLDomain: URLDomain
   }
   try {
-    const docRef = await getDocs(collection(db, 'Usuarios', IDusuario, 'proyectos'))
+    const docRef = await getDocs(
+      collection(db, 'Usuarios', IDusuario, 'proyectos')
+    )
     docRef.forEach((doc) => {
       documento.id = doc.data().id + 1
     })
@@ -54,36 +56,71 @@ async function cargarProyectos(IDusuario) {
 async function cargarLogs(IDusuario, idProyecto) {
   console.log(IDusuario, idProyecto)
   const estadisticas = await getDocs(
-    collection(db, 'Usuarios', IDusuario, 'proyectos', idProyecto, 'estadisticas')
+    collection(
+      db,
+      'Usuarios',
+      IDusuario,
+      'proyectos',
+      idProyecto,
+      'estadisticas'
+    )
   )
-  
+
   let logs = []
   let totalLogs = []
   estadisticas.forEach(async (doc) => {
-      logs = await getDocs(
-      collection(db, 'Usuarios', IDusuario, 'proyectos', idProyecto, 'estadisticas', doc.id, 'ubicaciones')
+    logs = await getDocs(
+      collection(
+        db,
+        'Usuarios',
+        IDusuario,
+        'proyectos',
+        idProyecto,
+        'estadisticas',
+        doc.id,
+        'ubicaciones'
+      )
     )
-      totalLogs.push(logs)
+    totalLogs.push(logs)
   })
-  console.log(totalLogs);
+  console.log(totalLogs)
   return logs
 }
 
 async function borrarProyecto(id, IDusuario) {
+  //delete collection
   try {
+    const q = query(
+      collection(
+        db,
+        'Usuarios',
+        IDusuario,
+        'proyectos',
+        id + '',
+        'estadisticas'
+      )
+    )
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(async (docc) => {
+      await deleteDoc(
+        doc(
+          db,
+          'Usuarios',
+          IDusuario,
+          'proyectos',
+          id + '',
+          'estadisticas',
+          docc.id
+        )
+      )
+    })
     await deleteDoc(doc(db, 'Usuarios', IDusuario, 'proyectos', id + ''))
   } catch (Error) {
     console.error('Error adding document: ', Error)
-    return {res: error}
+    return { res: error }
   }
-  return {res: 'deleted'}
+  return { res: 'deleted' }
+
 }
 
-
-
-export {
-  crearProyecto,
-  cargarProyectos,
-  borrarProyecto,
-  cargarLogs
-}
+export { crearProyecto, cargarProyectos, borrarProyecto, cargarLogs }
